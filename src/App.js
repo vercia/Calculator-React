@@ -1,26 +1,56 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import KeyPad from './KeyPad'
+import Output from './Output';
 
-function App() {
+class App extends React.Component {
+  state = {
+    result: ''
+  }
+  buttonPressed = (buttonName) => {
+    if(buttonName === '=') {
+      this.calculate()
+    } else if(buttonName === 'C') {
+      this.reset()
+    } else if(buttonName === 'CE') {
+      this.backspace()
+    } else {
+    this.setState({
+      result: this.state.result + buttonName
+    })
+  }
+}
+  calculate = () => {
+    try {
+      this.setState({
+      result: (eval(this.state.result) || "") + ""
+    })
+  } catch(e){
+      this.setState({
+        result: 'error'
+      })
+    }
+  }
+  reset = () => {
+    this.setState({
+      result: ''
+    })
+  }
+  backspace = () => {
+    this.setState({
+      result: this.state.result.slice(0, -1)
+    })
+  }
+  render(){
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+      <div className="App">
+      <div className="calc-body">
+        <Output result={this.state.result} />
+        <KeyPad buttonPressed={this.buttonPressed}/>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
